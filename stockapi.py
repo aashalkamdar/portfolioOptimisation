@@ -2,10 +2,7 @@ import requests
 import pandas as pd
 import csv
 import sys
-if sys.version_info[0] < 3: 
-    from StringIO import StringIO
-else:
-    from io import StringIO
+from io import StringIO
 
 def getStockData(ticker):
     apikeyFile = open('apiKey','r')
