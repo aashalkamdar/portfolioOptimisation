@@ -12,16 +12,14 @@ def optimize(stocks):
 
     for ticker in stocks:
         print(ticker)
-        stock_dfs[ticker] = getStockData(ticker,size='full')
+        stock_dfs[ticker] = getStockData(ticker)
     stock = pd.concat(list(stock_dfs.values()),axis=1)
     stock.columns = list(stock_dfs.keys())
     stock = stock.loc[~(stock==0).any(axis=1)] 
-
     stock.dropna(inplace=True)
-    #log returns - normalising
-    log_ret = np.log(stock/stock.shift(1))
-    
-    print(log_ret.head())
+
+    log_ret = np.log10(stock/stock.shift(1))
+    log_ret.fillna(log_ret.mean(),inplace=True)
     num_ports = 15000
 
     all_weights = np.zeros((num_ports,len(stock.columns)))
@@ -48,37 +46,12 @@ def optimize(stocks):
 
         # Sharpe Ratio
         sharpe_arr[ind] = ret_arr[ind]/vol_arr[ind]
-
+    
     maxSharpe = sharpe_arr.max()
     maxSharpeIndex = sharpe_arr.argmax()
-
-    max_sr_ret = ret_arr[maxSharpeIndex]
-    max_sr_vol = vol_arr[maxSharpeIndex]
-    plt.figure(figsize=(12,8))
-    plt.scatter(vol_arr,ret_arr,c=sharpe_arr,cmap='plasma')
-    plt.colorbar(label='Sharpe Ratio')
-    plt.xlabel('Volatility')
-    plt.ylabel('Return')
-    plt.scatter(max_sr_vol,max_sr_ret,c='black',s=50,edgecolors='black')
-    plt.savefig('./viz/efh.png')
-
-
-
-
-    # Add frontier line
-    # plt.plot(frontier_volatility,frontier_y,'g--',linewidth=3)
-    # plt.savefig('./viz/efh1.png')
+    
     return {'allocation':list(all_weights[maxSharpeIndex,:]),
             'max sharpe ratio':maxSharpe}
-    
 
-
-    # use getStockData and get all the stock data by looping through stocks
-
-    # do the magic calculations
-
-    # return plots and other results
-
-
-stocks = ['MRF.NS','TATAMOTORS.NS','MARUTI.NS','ITC.NS']
+stocks = ['EICHERMOT.NS','TCS.NS','AXISBANK.NS','HINDUNILVR.NS']
 print(optimize(stocks))

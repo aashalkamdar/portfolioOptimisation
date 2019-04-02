@@ -4,7 +4,7 @@ import csv
 import sys
 from io import StringIO
 
-def getStockData(ticker):
+def getStockData(ticker,size):
     apikeyFile = open('apiKey','r')
     apikey = str(apikeyFile.readline())
 
@@ -12,7 +12,7 @@ def getStockData(ticker):
 
 
     PARAMS = {
-        'outputsize':'full',
+        'outputsize':size,
         'apikey'    :apikey,
         'symbol'    :ticker,
         'function'  :'TIME_SERIES_DAILY_ADJUSTED',
