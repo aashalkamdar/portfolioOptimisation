@@ -18,7 +18,7 @@ def getStockData(ticker):
         'function'  :'TIME_SERIES_DAILY_ADJUSTED',
         'datatype'  :'csv'
     }
-
+    
     data = requests.get(baseURL,PARAMS).text
     data = StringIO(data)
     stock = pd.read_csv(data)
